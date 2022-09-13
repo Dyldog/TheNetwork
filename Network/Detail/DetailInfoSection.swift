@@ -1,0 +1,102 @@
+//
+//  DetailInfoSection.swift
+//  Network
+//
+//  Created by Dylan Elliott on 13/9/2022.
+//
+
+import Foundation
+import SwiftUI
+
+struct DetailInfoSection: View {
+    let properties: [(DisplayableDetail, DisplayableDetail)]
+    
+    @State var showDisplayable: String?
+    
+    @State var actionSheetElement: (DisplayableDetail, DisplayableDetail)? { didSet { showActionSheet = true }}
+    @State var showActionSheet: Bool = false
+    
+    @State var listViewModel: EasyListViewModel<WDEntity, Text>? {
+        didSet { showList = true }
+    }
+    
+    @State var showList: Bool = false
+
+    
+    var body: some View {
+        Section {
+            ForEach(Array(properties.enumerated()), id: \.offset) { offset, element in
+                HStack {
+                    view(for: element.0)
+                    view(for: element.1)
+                    
+                    Spacer()
+                    
+                    Button {
+                        print("Tapped \(element.0.id ?? "NOID") \(element.1.id ?? "NOID")")
+                        actionSheetElement = element
+                    } label: {
+                        Image(systemName: "ellipsis")
+                    }
+                    .buttonStyle(BorderlessButtonStyle())
+                }
+            }
+            .confirmationDialog("Drill Down", isPresented: $showActionSheet, presenting: actionSheetElement) { element in
+                if let property = element.0.id {
+                    Button("\(property) = *") {
+                        listViewModel = EasyListViewModel(
+                            title: "\(element.0.text ?? property)",
+                            dataFactory: { WDAPI.otherExamples(of: property) }
+                        )
+                    }
+                }
+                
+                if let value = element.1.id {
+                    Button("* = \(value)") {
+                        listViewModel = EasyListViewModel(
+                            title: "\(element.1.text ?? value)",
+                            dataFactory: { WDAPI.otherExamples(equalTo: value) }
+                        )
+                    }
+                }
+
+                if let property = element.0.id, let value = element.1.id {
+                    Button("\(property) = \(value)") {
+                        listViewModel = EasyListViewModel(
+                            title: "\(element.0.text ?? property): \(element.1.text ?? value)",
+                            dataFactory: { WDAPI.otherExamples(of: property, equalTo: value) }
+                        )
+                    }
+                }
+            }
+        }.background(NavigationLink(
+            isActive: $showList,
+            destination: {
+                if let listViewModel = listViewModel {
+                    ListView(viewModel: listViewModel)
+                } else {
+                    Text("Errror")
+                }
+            },
+            label: { EmptyView() }
+        )
+        .hidden())
+    }
+    
+    private func view(for value: DisplayableDetail) -> some View {
+        switch value {
+        case let .string(string):
+            return AnyView(Text(string))
+        case .loading:
+            return AnyView(ProgressView().padding(.leading))
+        case let .displayable(displayable):
+            return AnyView(
+                Button(displayable.title, action: {
+                    showDisplayable = displayable.id
+                })
+                .buttonStyle(BorderlessButtonStyle())
+                .foregroundColor(.blue)
+                .navigation(value: displayable.id, binding: $showDisplayable, linked: { displayable.detailView() }))
+        }
+    }
+}
