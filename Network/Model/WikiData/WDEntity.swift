@@ -26,15 +26,16 @@ extension WDEntity: DetailDisplayable {
         [
             ("Description", .string(descriptions.en?.value ?? "NONE")),
             ("Entity ID", .string(id))
-        ] + claims.flatMap { $0.value }.compactMap {
-            let title: Detail = .blockDisplayable(WDAPI.getEntity($0.mainsnak.property))
+        ] + claims.flatMap { $0.value }.filter { $0.rank != .deprecated }.compactMap {
+            let id = $0.mainsnak.property
+            let title: Detail = .blockDisplayable(id, WDAPI.getEntity(id))
             switch $0.mainsnak.datavalue {
             case nil: return nil
             case let .string(string):
                 return (title,.string(string))
             case let .wikibaseEntityID(entityID):
-                return (title, .blockDisplayable(WDAPI.getEntity(entityID.id)))
-            case .unknownType: return (.blockDisplayable(WDAPI.getEntity($0.mainsnak.property)), .string("Unknown"))
+                return (title, .blockDisplayable(entityID.id, WDAPI.getEntity(entityID.id)))
+            case .unknownType: return (.blockDisplayable($0.mainsnak.property, WDAPI.getEntity($0.mainsnak.property)), .string("Unknown"))
             }
         }
     }

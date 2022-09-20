@@ -9,4 +9,13 @@ import Foundation
 
 struct WDClaim: Codable {
     let mainsnak: WDSnak
+    let rank: Rank
+}
+
+extension WDClaim {
+    enum Rank: String, Codable {
+        case normal
+        case preferred
+        case deprecated
+    }
 }

@@ -17,6 +17,7 @@ struct WDAPI {
             .flatMap { (entity: WDSearchResponse) -> AnyPublisher<[WDEntity], APIError> in
                 getEntities(entity.search.map { $0.id })
             }
+//            .breakpointOnError()
             .eraseToAnyPublisher()
     }
     
@@ -49,7 +50,6 @@ struct WDAPI {
             .flatMap { (entity: WDFindResponse) -> AnyPublisher<[WDEntity], APIError> in
                 getEntities(entity.query.search.map { $0.title })
             }
-//            .map { $0 as [DetailDisplayable] }
             .eraseToAnyPublisher()
     }
 }

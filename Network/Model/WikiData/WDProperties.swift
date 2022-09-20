@@ -22,3 +22,7 @@ private var wikiDataProperties: [String: String] = {
 func wikiData(property: String) -> String {
     wikiDataProperties[property] ?? property
 }
+
+enum Properties: String {
+    case formatterURL = "P1630"
+}

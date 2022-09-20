@@ -11,4 +11,5 @@ enum WDEntityType: String, Codable {
     case item
     case property
     case form
+    case lexeme
 }

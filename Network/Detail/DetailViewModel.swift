@@ -35,6 +35,13 @@ class DetailViewModel<T: DetailDisplayable & Identifiable>: ObservableObject {
                 .receive(on: RunLoop.main)
                 .sink(receiveValue: { value in
                     self.properties[index].0 = value
+                    print("\(value.text ?? "NO_TITLE") = \(value.id ?? "NO_ID")")
+                    
+                    let formatterURLs = value.values(forProperty: .formatterURL)
+                    
+                    if formatterURLs.isEmpty == false {
+                        
+                    }
                 })
                 .store(in: &cancellables)
             

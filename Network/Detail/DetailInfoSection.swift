@@ -7,6 +7,7 @@
 
 import Foundation
 import SwiftUI
+import WKView
 
 struct DetailInfoSection: View {
     let properties: [(DisplayableDetail, DisplayableDetail)]
@@ -16,19 +17,21 @@ struct DetailInfoSection: View {
     @State var actionSheetElement: (DisplayableDetail, DisplayableDetail)? { didSet { showActionSheet = true }}
     @State var showActionSheet: Bool = false
     
-    @State var listViewModel: EasyListViewModel<WDEntity, Text>? {
-        didSet { showList = true }
-    }
-    
+    @State var listViewModel: EasyListViewModel<WDEntity, Text>? { didSet { showList = true } }
     @State var showList: Bool = false
+    
+    @State var urlToShow: String? { didSet { showWebview = true } }
+    @State var showWebview: Bool = false
+    
+    
 
     
     var body: some View {
         Section {
             ForEach(Array(properties.enumerated()), id: \.offset) { offset, element in
                 HStack {
-                    view(for: element.0)
-                    view(for: element.1)
+                    titleView(for: element.0)
+                    valueView(forTitle: element.0, and: element.1)
                     
                     Spacer()
                     
@@ -79,11 +82,21 @@ struct DetailInfoSection: View {
                 }
             },
             label: { EmptyView() }
-        )
-        .hidden())
+        ).hidden())
+        .background(NavigationLink(
+            isActive: $showWebview,
+            destination: {
+                if let urlToShow = urlToShow {
+                    WebView(url: urlToShow)
+                } else {
+                    Text("Errror")
+                }
+            },
+            label: { EmptyView() }
+        ).hidden())
     }
     
-    private func view(for value: DisplayableDetail) -> some View {
+    private func titleView(for value: DisplayableDetail) -> AnyView {
         switch value {
         case let .string(string):
             return AnyView(Text(string))
@@ -99,4 +112,18 @@ struct DetailInfoSection: View {
                 .navigation(value: displayable.id, binding: $showDisplayable, linked: { displayable.detailView() }))
         }
     }
+    
+    private func valueView(forTitle titleValue: DisplayableDetail, and valueValue: DisplayableDetail) -> AnyView {
+        guard
+            let format = titleValue.values(forProperty: .formatterURL).first?.stringValue,
+            let valueID = valueValue.text
+        else { return titleView(for: valueValue) }
+        return AnyView(Button(valueID, action: {
+            urlToShow = format.replacingOccurrences(of: "$1", with: valueID)
+        }))
+    }
 }
+
+//extension View {
+//    func navigating<T>(for value: Binding<T>, destination: )
+//}

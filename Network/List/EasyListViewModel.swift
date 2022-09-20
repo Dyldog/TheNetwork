@@ -59,6 +59,10 @@ class EasyListViewModel<T: Codable & Identifiable & RowDisplayable & DetailDispl
                 search($0)
                     .receive(on: RunLoop.main)
                     .sink { completion in
+                        switch completion {
+                        case .failure(let error): print("ERROR: \(error)")
+                        default: break
+                        }
                         self.loading = false
                     } receiveValue: { [weak self] value in
                         self?.unFilteredData = value

@@ -29,4 +29,22 @@ extension DisplayableDetail {
         case .displayable(let detailDisplayable): return detailDisplayable.title
         }
     }
+    
+    var properties: [(Detail, Detail)] {
+        switch self {
+        case .displayable(let detailDisplayable): return detailDisplayable.properties
+        default: return []
+        }
+    }
+    
+    func values(forProperty id: String) -> [Detail] {
+        return properties.filter {
+            guard case let (.blockDisplayable(itemID, _), _) = $0 else { return false }
+            return itemID == id
+        }.map { $0.1 }
+    }
+    
+    func values(forProperty property: Properties) -> [Detail] {
+        values(forProperty: property.rawValue)
+    }
 }

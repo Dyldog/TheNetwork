@@ -14,15 +14,22 @@ struct ListView<VM: ListViewModel & ObservableObject>: View {
     var body: some View {
         ZStack {
             List {
-                ForEach(viewModel.data) { person in
-                    NavigationLink {
-                        person.detailView()
-                    } label: {
-                        viewModel.display(person)
+                Section() {
+                    TextField("Search", text: $viewModel.searchText)
+//                        .textFieldStyle(RoundedBorderTextFieldStyle())
+                        .padding(0)
+                }
+                
+                Section() {
+                    ForEach(viewModel.data) { person in
+                        NavigationLink {
+                            person.detailView()
+                        } label: {
+                            viewModel.display(person)
+                        }
                     }
                 }
             }
-            .searchable(text: $viewModel.searchText)
             
             if viewModel.loading {
                 ProgressView()

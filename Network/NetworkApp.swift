@@ -12,8 +12,8 @@ import Combine
 struct NetworkApp: App {
     var body: some Scene {
         WindowGroup {
-            TabView {
-                NavigationView {
+            NavigationView {
+                TabView {
                     ListView(
                         viewModel: EasyListViewModel<WDEntity, VStack>(
                             title: "WIKI",
@@ -30,38 +30,36 @@ struct NetworkApp: App {
                             WDAPI.search(for: $0)
                         }
                     )
-                }
-                .tabItem { Label("WikiData", systemImage: "globe") }
-            
-//                NavigationView {
-//                    ListView(viewModel: EasyListViewModel<SWPerson>(path: "people"))
-//                }
-//                .tabItem { Label("People", systemImage: "person") }
-//
-                NavigationView {
+                    .tabItem { Label("WikiData", systemImage: "globe") }
+                    
+                    //                NavigationView {
+                    //                    ListView(viewModel: EasyListViewModel<SWPerson>(path: "people"))
+                    //                }
+                    //                .tabItem { Label("People", systemImage: "person") }
+                    //
                     ListView(viewModel: SWAPIListViewModel<SWFilm>(path: "films"))
+                        .tabItem { Label("Star Wars", systemImage: "film") }
+                    //
+                    //                NavigationView {
+                    //                    ListView(viewModel: EasyListViewModel<SWPlanet>(path: "planets"))
+                    //                }
+                    //                .tabItem { Label("Planets", systemImage: "globe.asia.australia") }
+                    //
+                    //                NavigationView {
+                    //                    ListView(viewModel: EasyListViewModel<SWStarship>(path: "starships"))
+                    //                }
+                    //                .tabItem { Label("Starships", systemImage: "airplane.departure") }
+                    //
+                    //                NavigationView {
+                    //                    ListView(viewModel: EasyListViewModel<SWVehicle>(path: "vehicles"))
+                    //                }
+                    //                .tabItem { Label("Vehicles", systemImage: "car") }
+                    //
+                    //                NavigationView {
+                    //                    ListView(viewModel: EasyListViewModel<SWSpecies>(path: "species"))
+                    //                }
+                    //                .tabItem { Label("Species", systemImage: "pawprint.fill") }
                 }
-                .tabItem { Label("Star Wars", systemImage: "film") }
-//
-//                NavigationView {
-//                    ListView(viewModel: EasyListViewModel<SWPlanet>(path: "planets"))
-//                }
-//                .tabItem { Label("Planets", systemImage: "globe.asia.australia") }
-//
-//                NavigationView {
-//                    ListView(viewModel: EasyListViewModel<SWStarship>(path: "starships"))
-//                }
-//                .tabItem { Label("Starships", systemImage: "airplane.departure") }
-//
-//                NavigationView {
-//                    ListView(viewModel: EasyListViewModel<SWVehicle>(path: "vehicles"))
-//                }
-//                .tabItem { Label("Vehicles", systemImage: "car") }
-//
-//                NavigationView {
-//                    ListView(viewModel: EasyListViewModel<SWSpecies>(path: "species"))
-//                }
-//                .tabItem { Label("Species", systemImage: "pawprint.fill") }
             }
         }
     }
