@@ -119,7 +119,7 @@ struct DetailInfoSection: View {
             let valueID = valueValue.text
         else { return titleView(for: valueValue) }
         return AnyView(Button(valueID, action: {
-            urlToShow = format.replacingOccurrences(of: "$1", with: valueID)
+            urlToShow = format.replacingOccurrences(of: "$1", with: valueID.urlSanitised)
         }))
     }
 }

@@ -46,6 +46,10 @@ extension String {
             .replacingOccurrences(of: "-", with: "")
             .lowercased()
     }
+    
+    var urlSanitised: String {
+        self.addingPercentEncoding(withAllowedCharacters: .urlHostAllowed) ?? ""
+    }
 }
 
 extension ListViewModel {
